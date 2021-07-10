@@ -25,6 +25,14 @@ resource "aws_security_group" "quest" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    description = "3001"
+    from_port   = 3001
+    to_port     = 3001
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -66,6 +74,10 @@ resource "aws_instance" "quest" {
       "git clone https://github.com/jestallin/quest.git",
       "cd quest && npm install forever -g && npm install",
       "forever start src/000.js",
+      "sudo usermod -aG docker $USER",
+      "sudo service docker start",
+      "sudo docker build -t quest .",
+      "sudo docker run -d -e SECRET_WORD='TwelveFactor' -p 3001:3000 quest"
     ]
   }
 }
