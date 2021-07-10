@@ -74,10 +74,9 @@ resource "aws_instance" "quest" {
       "git clone https://github.com/jestallin/quest.git",
       "cd quest && npm install forever -g && npm install",
       "forever start src/000.js",
-      "sudo usermod -aG docker $USER",
       "sudo service docker start",
       "sudo docker build -t quest .",
-      "sudo docker run -d -e SECRET_WORD='TwelveFactor' -p 3001:3000 quest"
+      "sudo docker run --user 1000:1000 -d -e SECRET_WORD='TwelveFactor' -p 3001:3000 quest"
     ]
   }
 }
