@@ -1,0 +1,49 @@
+
+Manual EC2 instructions
+---
+# create an Amazon flavor ec2 instance using the AWS console
+
+# install git
+sudo yum install -y git 
+
+# clone the forked questrepo
+git clone https://github.com/jestallin/quest.git && cd quest
+
+# install npm/node
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+. ~/.nvm/nvm.sh
+nvm install node
+node -e "console.log('Running Node.js ' + process.version)"
+# start the quest app on port 3000
+npm start &
+
+
+Manual Docker instructions
+-----
+# install docker on the same ec2 instance
+2  sudo yum install -y docker
+# start service
+sudo service docker start
+# Add ec2-user to docker grp  
+sudo groupadd docker
+sudo usermod -aG docker $USER
+
+# build Docker image
+docker build .
+
+# run the image expose on port 3001 on the ec2 instance
+docker run -p 3001:3000 -d 16cd301f5490
+curl localhost:3001
+
+# re-run the image with the injected env var
+docker run -e SECRET_WORD='TwelveFactor' -p 3001:3000 -d 16cd301f5490
+
+
+# Manual LB Steps
+
+Configured an ALB on port 3000 to forward to port 3000 to the target EC2 instance
+
+# TF Steps
+Build tf file
+terraform init
+terraform apply/destroy as needed to interate

@@ -17,6 +17,14 @@ resource "aws_security_group" "quest" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    description = "3000"
+    from_port   = 3000
+    to_port     = 3000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -49,19 +57,15 @@ resource "aws_instance" "quest" {
     host        = self.public_ip
   }
 
-  ebs_block_device {
-    device_name = "/dev/sda1"
-    volume_type = "gp2"
-    volume_size = 30
-  }
-
    provisioner "remote-exec" {
     inline = [
-      "yum install git docker ",
+      "sudo yum install -y git docker ",
       "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash",
       "source ~/.nvm/nvm.sh",
       "nvm install node",
-      "git clone https://github.com/jestallin/quest.git"
+      "git clone https://github.com/jestallin/quest.git",
+      "cd quest && npm install forever -g && npm install",
+      "forever start src/000.js",
     ]
   }
 }
