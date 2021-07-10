@@ -14,10 +14,23 @@ resource "aws_lb" "quest" {
   }
 }
 
-resource "aws_lb_listener" "quest" {
+resource "aws_lb_listener" "http-quest" {
   load_balancer_arn = aws_lb.quest.arn
   port              = "80"
   protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.quest.arn
+  }
+}
+
+resource "aws_lb_listener" "https-quest" {
+  load_balancer_arn = aws_lb.quest.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = "${var.cert-quest-jstallings-me}"
 
   default_action {
     type             = "forward"
@@ -48,6 +61,14 @@ resource "aws_security_group" "quest" {
     description = "HTTP"
     from_port   = 80
     to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "HTTPS"
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }

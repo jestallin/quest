@@ -47,3 +47,7 @@ Configured an ALB on port 3000 to forward to port 3000 to the target EC2 instanc
 Build tf file
 terraform init
 terraform apply/destroy as needed to interate
+
+# TLS/SSL cert steps
+Created a new cert in ACM using a domain I own
+Added the ARN to the lb related TF code
